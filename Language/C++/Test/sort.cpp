@@ -9,46 +9,34 @@ void print_array(int a[], int n) {
     cout << endl;
 }
 
-void merge(int a[], int low, int middle, int high) {
-    int i = low, j = middle+1;
-    int len = high - low + 1;
-    int tmp[len] = {0};
-    int k = 0;
+void heapify(int a[], int i, int n) {
+    int left = 2*i+1;
+    int right = 2*i+2;
+    int largest = i;
+    if(left < n && a[largest] < a[left])
+        largest = left;
+    if(right < n && a[largest] < a[right])
+        largest = right;
     
-    while(i <= middle && j <= high) {
-        if(a[i] <= a[j]) {
-            tmp[k++] = a[i++];
-        } else {
-            tmp[k++] = a[j++];
-        }
-    }
-
-    if(i <= middle) {
-        for(int l = i; l <= middle; ++l)
-            tmp[k++] = a[l];
-        }
-
-    if(j <= high) {
-        for(int l = j; l <= high; ++l)
-            tmp[k++] = a[l]; 
-    }
-
-    for(int l = 0; l < len; ++l) {
-        a[low++] = tmp[l];
+    if(i != largest) {
+        swap(a[i], a[largest]);
+        heapify(a, largest, n);
     }
 }
 
-void merge_sort(int a[], int low, int high) {
-    if(low < high) {
-        int middle = low + (high - low)/2;
-        merge_sort(a, low, middle);
-        merge_sort(a, middle+1, high);
-        merge(a, low, middle, high);
+void heapSort(int a[], int n) {
+    for(int i = n/2; i >=0; --i) {
+        heapify(a, i, n);
+    }
+
+    for(int i = n-1; i > 0; --i) {
+        swap(a[i], a[0]);
+        heapify(a, 0, i);
     }
 }
 
 void sort(int a[], int n) {
-    merge_sort(a, 0, n-1);
+    heapSort(a, n);
 }
 
 int main() {
